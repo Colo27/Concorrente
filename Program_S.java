@@ -39,13 +39,15 @@ public class Program_S extends UnicastRemoteObject implements InterS {
 //			per la copia della pagina web
 			HttpURLConnection urlConnection = (HttpURLConnection) sito.openConnection();
 			InputStream in = sito.openStream();
+//			fa la parte di lettura e scrittura
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			StringBuilder result = new StringBuilder();
 			String line;
 			while ((line = reader.readLine()) != null) {
 				result.append(line);
 			}
-			System.out.println(result.toString());
+//			stampo sia l'url della pagina selezionata che l'HTML
+			System.out.println("L'url è: " + sito +"\nE l'HTML è: " + result.toString());
 			urlConnection.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();

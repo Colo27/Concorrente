@@ -18,15 +18,15 @@ public class Program_C extends UnicastRemoteObject implements InterC {
 		this.myName = name;
 	}
 
-//	questo è per far andare il server dell'rmi
+//	questo è per connessione rmi
 	public static void main(String[] args) throws RemoteException {
 		try {
 			Registry registro = LocateRegistry.createRegistry(1099);
 			InterS stub = (InterS) registro.lookup("Program_S");
-//			System.setProperty("java.rmi.server.hostname", "192.168.1.138");
+//			new Program_C(stub);
 			InterC intrC = new Program_C("Client");
-			registro.rebind("Program_C", intrC);
-			System.out.println("Program C bounded in registry");
+//			registro.rebind("Program_C", intrC);
+			System.out.println("Program C " + " si è collegato");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (NotBoundException e) {
@@ -42,6 +42,7 @@ public class Program_C extends UnicastRemoteObject implements InterC {
 	
 	public void run ()
     {
+//		questo è per il timer di disconnessione dell'abbonamento
 		while(true)
         {
 			try
@@ -51,7 +52,7 @@ public class Program_C extends UnicastRemoteObject implements InterC {
                     Random random =  new Random();
                     int i = random.nextInt(50);
                     if (i%2==0){
-                        System.out.println("Client will shutdown");
+                        System.out.println("Il client ha cancellato il suo abbonamento");
                         TimeUnit.SECONDS.sleep(1);
                         stub.disabbonati(this);
                         System.exit(0);
