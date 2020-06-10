@@ -28,15 +28,16 @@ public class Program_S extends UnicastRemoteObject implements InterS {
 //			System.setProperty("java.rmi.server.hostname", "192.168.1.138");
 			InterS intrS = new Program_S();
 			reg.rebind("Program_S", intrS);
-			System.out.println("Il Server ï¿½ attivo");
+			System.out.println("Il Server è attivo");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public synchronized void aggiornaSito(String sito, URL url) throws RemoteException {
+	public synchronized void aggiornaSito(String sito, URL url, String id) throws RemoteException {
 		contattaClient(sito, url);
-		System.out.println(sito);
+		
+		System.out.println("Fornitore " + id + "dice: " + sito);
 	}
 
 	public synchronized void abbonati(InterC ic) throws RemoteException {

@@ -28,14 +28,16 @@ public class Program_C extends UnicastRemoteObject implements InterC, Runnable {
 
 	@Override
 	public void ricezione(String s, URL url) throws RemoteException {
-		System.out.println("l'HTML è: " + s);
-		System.out.println("l'URL è: " + url);
+		System.out.println(myName + " dice che l'HTML è: " + s);
+		System.out.println(myName + " dice che l'URL è: " + url);
 	}
 
 	public void run() {
+//		definizioni
+		boolean isAlive = true;
 		try {
 //		questo è per il timer di disconnessione dell'abbonamento
-			while (true) {
+			while (isAlive) {
 //				prendo il tempo che è passato
 				Long endTime = System.currentTimeMillis();
 				if (endTime - timer > 10000) {
@@ -46,7 +48,8 @@ public class Program_C extends UnicastRemoteObject implements InterC, Runnable {
 						System.out.println("Il client " + myName + " ha cancellato il suo abbonamento");
 						TimeUnit.SECONDS.sleep(1);
 						stub.disabbonati(this);
-						System.exit(0);
+//						morte al thread
+						isAlive = false;
 					}
 
 					timer = System.currentTimeMillis();

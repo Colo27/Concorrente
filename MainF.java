@@ -1,4 +1,3 @@
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -8,7 +7,7 @@ public class MainF {
 
 	public MainF() {
 	}
-// faccio cosï¿½ per lanciarne due piï¿½ comodamente
+// faccio così per lanciarne due più comodamente
 	void myRun() throws RemoteException, Exception {
 		Scanner scan = new Scanner(System.in);
 		Registry registro = LocateRegistry.getRegistry(1099);

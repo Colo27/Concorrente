@@ -5,10 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
@@ -30,23 +27,33 @@ public class Program_F extends UnicastRemoteObject implements Runnable {
 //		chiedi il link
 		String s;
 		while (true) {
-			s = getUrl();
-			URL url;
-			try {
-				url = new URL(s);
-				String html = LeggiHTML(url);
-				interf.aggiornaSito(html, url);
-			} catch (MalformedURLException e) {
-				System.out.println("URL non valido; ");
+			synchronized (System.out) {
+				s = getUrl();
+				URL url;
+				try {
+					url = new URL(s);
+					String html = LeggiHTML(url);
+					interf.aggiornaSito(html, url, Id);
+
+				} catch (MalformedURLException e) {
+					System.out.println("URL non valido; ");
 //				e.printStackTrace();
-			} catch (RemoteException e) {
-				System.out.println("Remote Exception; ");
+				} catch (RemoteException e) {
+					System.out.println("Remote Exception; ");
+					e.printStackTrace();
+				}
+			} try {
+//				non è ottimale ma sono le 17:15 e manca ancora la documentazione
+				Thread.sleep(2500);
+//				la prego non lo valuti male
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private synchronized String LeggiHTML(URL sito) {
+	private String LeggiHTML(URL sito) {
 		StringBuilder result = new StringBuilder();
 		try {
 //			per la copia della pagina web
@@ -59,20 +66,23 @@ public class Program_F extends UnicastRemoteObject implements Runnable {
 				result.append(line);
 			}
 //			stampo sia l'url della pagina selezionata che l'HTML
-			System.out.println("L'url ï¿½: " + sito + "\nE l'HTML ï¿½: " + result.toString());
+			System.out.println("L'url è: " + sito + "\nE l'HTML è: " + result.toString());
 			urlConnection.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result.toString();
+		return result.toString().substring(0, 50);
 
 	}
 
 	private synchronized String getUrl() {
 		try {
-			//  		assegna la stringa a url
-			System.out.println("Di quale sito vuoi prendere la pagina? ");
+//  		assegna la stringa a url
+			System.out.println(Id + " > Di quale sito vuoi prendere la pagina? ");
+
+//			leggi cosa scrive l'utente
 			String s = scanner.nextLine();
+
 			return s;
 		} catch (Exception e) {
 			return getUrl();

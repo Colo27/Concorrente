@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 public interface InterS extends Remote {
 
-	public void aggiornaSito(String sito, URL url) throws RemoteException;
+	public void aggiornaSito(String sito, URL url, String id) throws RemoteException;
 
 	public void abbonati(InterC ic) throws RemoteException;
 
