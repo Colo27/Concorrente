@@ -9,54 +9,42 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
-public class Program_F extends Thread {
+public class Program_F extends UnicastRemoteObject implements Runnable {
 //  dichiarazioni globali
-	int Id;
+	String Id;
 	InterS interf;
 
-	public Program_F(int id) {
-		Id = id;
-		Registry registry;
-		try {
-			registry = LocateRegistry.getRegistry();
-			InterS interf = (InterS) registry.lookup("Program_S");
-//			stampa l'ack
-			System.out.println(interf);
-		} catch (RemoteException | NotBoundException e) {
-			e.printStackTrace();
-		}
-		start();
+	public Program_F(InterS interS, String id) throws RemoteException {
+		this.Id = id;
+		this.interf = interS;
+//		stampa l'ack
+		System.out.println(interf);
 	}
 
 	public void run() {
 //		chiedi il link
-		InterS interf = null;
-		try {
-			Registry registry = LocateRegistry.getRegistry(1099);
-			interf = (InterS) registry.lookup("Program_S");
-
-		} catch (Exception e) {
-			System.out.println("ERROR " + e.getStackTrace());
-		}
-
 		String s;
 		while (true) {
 			s = getUrl();
 			URL url;
 			try {
-				url = new URL(s);		
+				url = new URL(s);
 				String html = LeggiHTML(url);
 				interf.aggiornaSito(html, url);
-			} catch (MalformedURLException | RemoteException e) {
+			} catch (MalformedURLException e) {
 				System.out.println("URL non valido; ");
+//				e.printStackTrace();
+			} catch (RemoteException e) {
+				System.out.println("Remote Exception; ");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private String LeggiHTML(URL sito) {
+	private synchronized String LeggiHTML(URL sito) {
 		StringBuilder result = new StringBuilder();
 		try {
 //			per la copia della pagina web
@@ -78,7 +66,7 @@ public class Program_F extends Thread {
 
 	}
 
-	public String getUrl() {
+	private synchronized String getUrl() {
 		try {
 			System.out.println("Di quale sito vuoi prendere la pagina? ");
 			Scanner scan = new Scanner(System.in);
