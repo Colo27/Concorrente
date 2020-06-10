@@ -1,3 +1,4 @@
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -26,36 +27,38 @@ public class Program_F extends Thread {
 
 	public void run() {
 //		chiedi il link
-		InterS interf= null;
+		InterS interf = null;
 		try {
 			Registry registry = LocateRegistry.getRegistry();
-			 interf = (InterS) registry.lookup("Program_S");
+			interf = (InterS) registry.lookup("Program_S");
 
-		}catch (Exception e ) {
-			System.out.println("ERROR "+ e.getStackTrace());
+		} catch (Exception e) {
+			System.out.println("ERROR " + e.getStackTrace());
 		}
-//	      	classe scanner
-			 URL url= getUrl();
-			 try {
+
+		String s;
+		while (true) {
+			s = getUrl();
+			URL url;
+			try {
+				url = new URL(s);
 				interf.LeggiHTML(url);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (MalformedURLException | RemoteException e) {
+				System.out.println("URL no valido; " );
 			}
+		}
 	}
-			 
-	public URL getUrl () {
+
+	public String getUrl() {
 		try {
-			System.out.println("Di quale sito vuoi prendere la pagina? ");
+			System.out.println("Di quale sito vuoi prendere la pagina? " );
 			Scanner scan = new Scanner(System.in);
 			String s = scan.nextLine();
 //  		assegna la stringa a url
-			URL url = new URL(s);
-			return url;
+			return s;
 		} catch (Exception e) {
 			return getUrl();
 		}
 	}
-	
-	
+
 }
