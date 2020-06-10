@@ -11,22 +11,28 @@ public class Program_C extends UnicastRemoteObject implements InterC {
 
 	private InterS stub;
 	private String myName;
+//	timer per scadenza della connessione
 	Long timer = System.currentTimeMillis();
 
 	public Program_C(String name) throws RemoteException {
 		super();
 		this.myName = name;
 	}
+	
+	public Program_C(InterS stub) throws RemoteException {
+		super();
+		stub = stub;
+	}
 
 //	questo è per connessione rmi
 	public static void main(String[] args) throws RemoteException {
 		try {
+			
 			Registry registro = LocateRegistry.createRegistry(1099);
 			InterS stub = (InterS) registro.lookup("Program_S");
-//			new Program_C(stub);
-			InterC intrC = new Program_C("Client");
-//			registro.rebind("Program_C", intrC);
-			System.out.println("Program C " + " si è collegato");
+//			Program_C pc = new Program_C(stub, "");
+			new Program_C(stub);
+			System.out.println("Program C si è collegato");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (NotBoundException e) {
@@ -34,6 +40,11 @@ public class Program_C extends UnicastRemoteObject implements InterC {
 			e.printStackTrace();
 		}
 	}
+	
+	public void SetStub(InterS stub) {
+		this.stub = stub;
+	}
+	
 
 	@Override
 	public void ricezione(String s) throws RemoteException {
@@ -51,6 +62,7 @@ public class Program_C extends UnicastRemoteObject implements InterC {
                 if (endTime - timer > 10000) {
                     Random random =  new Random();
                     int i = random.nextInt(50);
+//                  a caso si stacca se la divisione ha 0 di resto
                     if (i%2==0){
                         System.out.println("Il client ha cancellato il suo abbonamento");
                         TimeUnit.SECONDS.sleep(1);
