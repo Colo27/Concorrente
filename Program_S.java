@@ -18,17 +18,17 @@ public class Program_S extends UnicastRemoteObject implements InterS {
 
 	public Program_S() throws RemoteException {
 		super();
-		clients = new LinkedList();
+		clients = new LinkedList<InterC>();
 	}
 
-//	questo è per far andare il server dell'rmi
+//	questo per far andare il server dell'rmi
 	public static void main(String[] args) {
 		try {
 			Registry reg = LocateRegistry.createRegistry(1099);
 //			System.setProperty("java.rmi.server.hostname", "192.168.1.138");
 			InterS intrS = new Program_S();
 			reg.rebind("Program_S", intrS);
-			System.out.println("Il Server è attivo");
+			System.out.println("Il Server ï¿½ attivo");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
