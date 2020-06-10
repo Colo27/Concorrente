@@ -28,30 +28,15 @@ public class Program_S extends UnicastRemoteObject implements InterS {
 //			System.setProperty("java.rmi.server.hostname", "192.168.1.138");
 			InterS intrS = new Program_S();
 			reg.rebind("Program_S", intrS);
-			System.out.println("Server bounded in registry");
+			System.out.println("Il Server è attivo");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public synchronized void LeggiHTML(URL sito) {
-		try {
-//			per la copia della pagina web
-			HttpURLConnection urlConnection = (HttpURLConnection) sito.openConnection();
-			InputStream in = sito.openStream();
-//			fa la parte di lettura e scrittura
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			StringBuilder result = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				result.append(line);
-			}
-//			stampo sia l'url della pagina selezionata che l'HTML
-			System.out.println("L'url è: " + sito +"\nE l'HTML è: " + result.toString());
-			urlConnection.disconnect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public synchronized void aggiornaSito(String sito, URL url) throws RemoteException {
+		contattaClient(sito, url);
+		System.out.println(sito);
 	}
 
 	public synchronized void abbonati(InterC ic) throws RemoteException {
@@ -62,9 +47,9 @@ public class Program_S extends UnicastRemoteObject implements InterS {
 		clients.remove(ic);
 	}
 
-	public synchronized void contattaClient(String s) throws RemoteException {
+	public synchronized void contattaClient(String s, URL url) throws RemoteException {
 		for (int j = 0; j < clients.size(); j++) {
-			clients.get(j).ricezione(s);
+			clients.get(j).ricezione(s, url);
 		}
 	}
 }

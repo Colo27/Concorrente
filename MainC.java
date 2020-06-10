@@ -1,19 +1,24 @@
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class MainC {
 
 	public MainC() {
-	}
-	
-	void myRun() throws RemoteException {
-		new Program_C("Client 1");
-		new Program_C("Client 2");
-		new Program_C("Client 3");
-		new Program_C("Client 4");
-		new Program_C("Client 5");
+
 	}
 
-	public static void main(String[] args) throws RemoteException {
+	void myRun() throws RemoteException, Exception {
+		Registry registro = LocateRegistry.getRegistry(1099);
+		InterS stub = (InterS) registro.lookup("Program_S");
+		for (int i = 0; i < 5; i++) {
+			Thread t = new Thread(new Program_C(stub, "Client " + (i+1)));
+			t.start();
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
 		new MainC().myRun();
 	}
 }
